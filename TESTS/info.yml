@@ -1,0 +1,24 @@
+---
+- name: Get GCP Database Instance IP
+  hosts: ansible_controller  # Assuming details are accessible from localhost
+
+  tasks:
+  - name: Get info about database instance
+    gcp_compute_instance_info:
+      filters:
+        name= "db"
+      auth_kind: serviceaccount
+      service_account_file: "/home/aymanmbarki48/DEMO_ANSIBLE/inventory/positive-rush-426912-h6-cdc24fe0f35b.json"
+      project: "positive-rush-426912-h6"  # Replace with your GCP project ID
+      zone: "europe-west9-a"  # Replace with the region where your database instance resides
+    register: instance_info
+
+  - name: Print the database instance Internal IP address
+    debug:
+      msg: "VM 'db' IP address: {{ instance_info.resources[0].networkInterfaces[0].networkIP }}"
+
+  - name: Update app.py with VM's IP address
+    ansible.builtin.lineinfile:
+      path: /home/aymanmbarki48/DEMO_ANSIBLE/app.py
+      regexp: "mysql_database_host = .*"
+      line: "mysql_database_host = '{{ instance_info.resources[0].networkInterfaces[0].networkIP }}'"

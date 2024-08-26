@@ -1,0 +1,12 @@
+---
+# tasks file for terraform
+#
+- name: Initialize Terraform
+  command: terraform init
+  args:
+    chdir: /home/aymanmbarki48/DEMO_ANSIBLE/TERRAFORM
+
+- name: Apply Terraform
+  command: terraform apply -auto-approve
+  args:
+    chdir: /home/aymanmbarki48/DEMO_ANSIBLE/TERRAFORM

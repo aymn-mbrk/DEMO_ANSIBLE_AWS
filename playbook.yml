@@ -1,0 +1,53 @@
+---
+#- name: DEPLOY GCP INSTANCES WITH TERRAFORM
+# hosts: ansible_controller
+# roles:
+#   - terraform
+
+- name: Get DB instance details 
+  hosts: localhost
+  tasks:
+    - name: Get instance details
+      amazon.aws.ec2_instance_info:
+        filters:
+          instance-state-name: running
+          tag:Name: "db"
+        region: "eu-north-1"
+        
+      register: instance_info
+    
+    - name: Replace mysql host IP in the file app.py
+      become: yes
+      ansible.builtin.lineinfile:    
+        path: /home/ubuntu/DEMO_ANSIBLE_AWS/app.py
+        regexp: '^mysql_database_host = .*'  
+        line: "mysql_database_host = '{{ instance_info.instances[0].private_ip_address }}'"
+
+
+          #    - name: Set instance_info as a fact
+          # set_fact:
+          # db_info: "{{ instance_info.resources[0].networkInterfaces[0].networkIP }}"
+          # delegate_to: "{{ item }}"
+          # delegate_facts: True
+          #  loop: "{{ groups['db'] }}"
+
+          #- name: Get instance Internal IP
+          #hosts: db
+          #  tasks:
+          # - name: print the fact
+          #debug:
+          #msg: "{{ db_info }}"
+
+
+- name: Deploy MYSQL DB
+  hosts: db
+  roles:
+    - update_install
+    - mysql_db
+  
+
+- name: Deploy WEB APP
+  hosts: web1,web2 
+  roles:
+    - update_install
+    - flask_web

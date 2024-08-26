@@ -1,0 +1,16 @@
+---
+- name: Get DB instance details
+  hosts: ansible_controller
+  tasks:
+    - name: Get instance details
+      gcp_compute_instance_info:
+        filters:
+          name= "ansible-controller"
+        auth_kind: serviceaccount
+        service_account_file: "/home/aymanmbarki48/credentials/positive-rush-426912-h6-90a681642f90.json"
+        project: "positive-rush-426912-h6"
+        zone: "europe-west9-a"
+      register: instance_info
+    - name: Get Value   
+      debug:
+        msg: "{{ instance_info }}"

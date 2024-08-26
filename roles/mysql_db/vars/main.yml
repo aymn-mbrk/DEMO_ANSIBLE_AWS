@@ -1,0 +1,4 @@
+---
+# vars file for mysql_db
+#
+ db_info: "{{ instance_info }}"

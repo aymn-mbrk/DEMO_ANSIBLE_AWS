@@ -1,0 +1,13 @@
+---
+- name: DEPLOY GCP INSTANCES WITH TERRAFORM
+  hosts: ansible_controller
+  roles:
+    - terraform
+
+- name: Check SSH Connection
+  hosts: db,web1,web2
+  remote_user: aymanmbarki48
+  private_key_file: ~/.ssh/id_rsa
+  tasks: 
+    - name: ssh
+      ping:

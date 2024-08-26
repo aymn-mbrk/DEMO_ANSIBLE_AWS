@@ -1,0 +1,7 @@
+---
+- name: Test SSH connectivity
+  hosts: db,web1,web2
+  gather_facts: yes
+  tasks:
+    - name: Ping hosts
+      ping:

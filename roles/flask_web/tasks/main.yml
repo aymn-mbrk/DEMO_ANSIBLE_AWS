@@ -1,0 +1,16 @@
+    - name: Install Python Flask dependency
+      become: yes
+      command:
+        cmd: pip install {{ item }} --break-system-packages
+      loop:
+        - flask==2.3.3
+        - flask-mysql
+
+    - name: Copy source code
+      become: yes
+      copy: src=app.py dest=/opt/app.py
+
+
+    - name: Start Web Server
+      become: yes
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 &
